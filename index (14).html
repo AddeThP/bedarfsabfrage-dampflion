@@ -513,25 +513,25 @@ function renderOverview(){
   table.classList.remove('hidden');
   emptyMsg.classList.add('hidden');
 
-  head.innerHTML = '<th>Partner</th>' + products.map(([pid,p]) => `<th>${escapeHtml(p.name)}</th>`).join('');
+  head.innerHTML = '<th>Produkt</th>' + accounts.map(([aid,acc]) => `<th>${escapeHtml(acc.nickname)}</th>`).join('') + '<th>Gesamt</th>';
 
   body.innerHTML = '';
-  const totals = {};
-  products.forEach(([pid]) => totals[pid] = 0);
 
-  accounts.forEach(([aid, acc]) => {
+  products.forEach(([pid, p]) => {
     const tr = document.createElement('tr');
-    let rowHtml = `<td>${escapeHtml(acc.nickname)}</td>`;
-    products.forEach(([pid]) => {
+    let rowHtml = `<td>${escapeHtml(p.name)}</td>`;
+    let rowTotal = 0;
+    accounts.forEach(([aid]) => {
       const val = (state.needs[aid] && state.needs[aid][pid]) || 0;
-      totals[pid] += val;
+      rowTotal += val;
       rowHtml += `<td>${val || '–'}</td>`;
     });
+    rowHtml += `<td style="color:var(--gold);font-weight:700;">${rowTotal}</td>`;
     tr.innerHTML = rowHtml;
     body.appendChild(tr);
   });
 
-  foot.innerHTML = '<td>Gesamt</td>' + products.map(([pid]) => `<td>${totals[pid]}</td>`).join('');
+  foot.innerHTML = '';
 }
 
 // --- Products management ---
