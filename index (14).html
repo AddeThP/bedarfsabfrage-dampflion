@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bedarfsabfrage Dampflion</title>
+<style>
+  :root{
+    --bg:#0f1115;
+    --bg2:#171a21;
+    --card:#1c2028;
+    --border:#2a2f3a;
+    --gold:#e0a94a;
+    --gold-soft:#c99a4f;
+    --red:#c0392b;
+    --text:#e8e8ea;
+    --text-dim:#9098a8;
+    --green:#3fae5c;
+    --danger:#d9534f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background:linear-gradient(180deg,var(--bg) 0%, var(--bg2) 100%);
+    color:var(--text);
+    min-height:100vh;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:20px 16px 60px;}
+  header{
+    text-align:center;
+    padding:18px 0 22px;
+  }
+  header h1{
+    margin:0;
+    font-size:22px;
+    letter-spacing:0.5px;
+    font-weight:700;
+  }
+  header h1 span{color:var(--gold);}
+  header .sub{color:var(--text-dim);font-size:13px;margin-top:4px;}
+
+  .sync-row{
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    font-size:12px;color:var(--text-dim);margin-top:8px;
+  }
+  .sync-dot{width:7px;height:7px;border-radius:50%;background:#555;}
+  .sync-dot.online{background:var(--green);box-shadow:0 0 6px var(--green);}
+  .sync-dot.loading{background:var(--gold);animation:pulse 1s infinite;}
+  .sync-dot.offline{background:var(--danger);}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px;
+    margin-bottom:16px;
+  }
+  .card h2{
+    font-size:14px;
+    text-transform:uppercase;
+    letter-spacing:0.8px;
+    color:var(--gold);
+    margin:0 0 14px;
+  }
+  label{display:block;font-size:13px;color:var(--text-dim);margin-bottom:6px;}
+  select, input[type=text], input[type=password], input[type=number]{
+    width:100%;
+    background:var(--bg2);
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:11px 12px;
+    border-radius:8px;
+    font-size:15px;
+    margin-bottom:14px;
+  }
+  select:focus, input:focus{outline:none;border-color:var(--gold);}
+
+  button{
+    cursor:pointer;
+    border:none;
+    border-radius:8px;
+    padding:12px 16px;
+    font-size:14px;
+    font-weight:600;
+    transition:transform .05s ease;
+  }
+  button:active{transform:scale(0.98);}
+  .btn-primary{background:var(--gold);color:#1a1a1a;width:100%;}
+  .btn-primary:hover{background:var(--gold-soft);}
+  .btn-secondary{background:transparent;color:var(--text-dim);border:1px solid var(--border);width:100%;}
+  .btn-secondary:hover{color:var(--text);border-color:var(--text-dim);}
+  .btn-danger{background:var(--danger);color:#fff;}
+  .btn-small{padding:7px 10px;font-size:12px;width:auto;}
+  .btn-row{display:flex;gap:8px;}
+  .btn-row button{flex:1;}
+
+  .hidden{display:none !important;}
+
+  .product-row{
+    display:flex;align-items:center;gap:12px;
+    padding:10px 0;border-bottom:1px solid var(--border);
+  }
+  .product-row:last-child{border-bottom:none;}
+  .product-row .pname{flex:1;font-size:15px;}
+  .product-row input[type=number]{
+    width:80px;margin-bottom:0;text-align:center;
+  }
+
+  .toast{
+    position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+    background:var(--card);border:1px solid var(--gold);color:var(--text);
+    padding:10px 18px;border-radius:8px;font-size:14px;
+    opacity:0;pointer-events:none;transition:opacity .25s ease, bottom .25s ease;
+    z-index:999;
+  }
+  .toast.error{border-color:var(--danger);}
+  .toast.show{opacity:1;bottom:30px;}
+
+  .top-actions{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+  .top-actions .who{font-size:14px;color:var(--text-dim);}
+  .top-actions .who span{color:var(--gold);font-weight:600;}
+  .link-btn{background:none;border:none;color:var(--text-dim);font-size:12px;text-decoration:underline;padding:0;width:auto;}
+  .link-btn:hover{color:var(--gold);}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th,td{padding:8px 6px;border-bottom:1px solid var(--border);text-align:center;}
+  th{color:var(--gold);font-weight:600;font-size:12px;white-space:nowrap;}
+  td:first-child, th:first-child{text-align:left;color:var(--text);}
+  tfoot td{color:var(--gold);font-weight:700;background:rgba(224,169,74,0.06);}
+  .table-scroll{overflow-x:auto;}
+
+  .admin-tabs{display:flex;gap:6px;margin-bottom:16px;}
+  .admin-tab{
+    flex:1;text-align:center;padding:9px 6px;border-radius:8px;
+    background:var(--bg2);border:1px solid var(--border);
+    color:var(--text-dim);font-size:12px;cursor:pointer;font-weight:600;
+  }
+  .admin-tab.active{background:var(--gold);color:#1a1a1a;border-color:var(--gold);}
+
+  .list-item{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:10px 0;border-bottom:1px solid var(--border);
+  }
+  .list-item:last-child{border-bottom:none;}
+  .list-item .meta{font-size:13px;}
+  .list-item .meta .small{display:block;color:var(--text-dim);font-size:11px;margin-top:2px;}
+
+  .empty{color:var(--text-dim);font-size:13px;text-align:center;padding:20px 0;}
+  .savebar{margin-top:6px;}
+  .last-saved{font-size:11px;color:var(--text-dim);text-align:center;margin-top:8px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>🔥 Bedarfsabfrage <span>Dampflion</span></h1>
+    <div class="sub">Meldet euren Produktbedarf direkt hier an</div>
+    <div class="sync-row"><div class="sync-dot" id="sync-dot"></div><span id="sync-label">Verbinde...</span></div>
+  </header>
+
+  <!-- LOGIN SCREEN -->
+  <div class="card" id="login-screen">
+    <h2>Anmeldung</h2>
+    <label for="login-select">Nickname</label>
+    <select id="login-select"><option value="">– wird geladen –</option></select>
+    <label for="login-pw">Passwort</label>
+    <input type="password" id="login-pw" placeholder="Passwort">
+    <button class="btn-primary" onclick="doLogin()">Einloggen</button>
+    <div style="text-align:center;margin-top:14px;">
+      <button class="link-btn" onclick="openAdminLogin()">Poweradmin-Zugang</button>
+    </div>
+  </div>
+
+  <!-- ADMIN LOGIN SCREEN -->
+  <div class="card hidden" id="admin-login-screen">
+    <h2>Poweradmin-Zugang</h2>
+    <label for="admin-pw">Poweradmin-Passwort</label>
+    <input type="password" id="admin-pw" placeholder="Passwort">
+    <button class="btn-primary" onclick="doAdminLogin()">Einloggen</button>
+    <div style="text-align:center;margin-top:14px;">
+      <button class="link-btn" onclick="backToLogin()">Zurück zur normalen Anmeldung</button>
+    </div>
+  </div>
+
+  <!-- PARTNER VIEW -->
+  <div id="partner-view" class="hidden">
+    <div class="top-actions">
+      <div class="who">Angemeldet als <span id="partner-name"></span></div>
+      <button class="link-btn" onclick="logout()">Abmelden</button>
+    </div>
+    <div class="card">
+      <h2>Euer Bedarf</h2>
+      <div id="partner-products"></div>
+      <div class="savebar">
+        <button class="btn-primary" onclick="savePartnerNeeds()">Bedarf speichern</button>
+      </div>
+      <div class="last-saved" id="partner-last-saved"></div>
+    </div>
+  </div>
+
+  <!-- ADMIN VIEW -->
+  <div id="admin-view" class="hidden">
+    <div class="top-actions">
+      <div class="who">Poweradmin</div>
+      <button class="link-btn" onclick="logout()">Abmelden</button>
+    </div>
+
+    <div class="admin-tabs">
+      <div class="admin-tab active" data-tab="overview" onclick="switchAdminTab('overview')">Übersicht</div>
+      <div class="admin-tab" data-tab="products" onclick="switchAdminTab('products')">Produkte</div>
+      <div class="admin-tab" data-tab="accounts" onclick="switchAdminTab('accounts')">Partner</div>
+    </div>
+
+    <!-- OVERVIEW TAB -->
+    <div class="card admin-panel" id="tab-overview">
+      <h2>Bedarfsübersicht</h2>
+      <div class="table-scroll">
+        <table id="overview-table">
+          <thead><tr id="overview-head"></tr></thead>
+          <tbody id="overview-body"></tbody>
+          <tfoot><tr id="overview-foot"></tr></tfoot>
+        </table>
+      </div>
+      <div class="empty hidden" id="overview-empty">Noch keine Produkte oder Partner angelegt.</div>
+    </div>
+
+    <!-- PRODUCTS TAB -->
+    <div class="card admin-panel hidden" id="tab-products">
+      <h2>Produkt hinzufügen</h2>
+      <label for="new-product-name">Produktname</label>
+      <input type="text" id="new-product-name" placeholder="z.B. Produkt 1">
+      <button class="btn-primary" onclick="addProduct()">Produkt anlegen</button>
+    </div>
+    <div class="card admin-panel hidden" id="tab-products-list">
+      <h2>Produkte</h2>
+      <div id="products-list"></div>
+      <div class="empty hidden" id="products-empty">Noch keine Produkte angelegt.</div>
+    </div>
+
+    <!-- ACCOUNTS TAB -->
+    <div class="card admin-panel hidden" id="tab-accounts">
+      <h2>Login-Partner anlegen</h2>
+      <label for="new-nickname">Nickname</label>
+      <input type="text" id="new-nickname" placeholder="z.B. Roman">
+      <label for="new-pw">Passwort</label>
+      <input type="text" id="new-pw" placeholder="Passwort für diesen Partner">
+      <button class="btn-primary" onclick="addAccount()">Partner anlegen</button>
+    </div>
+    <div class="card admin-panel hidden" id="tab-accounts-list">
+      <h2>Login-Partner</h2>
+      <div id="accounts-list"></div>
+      <div class="empty hidden" id="accounts-empty">Noch keine Partner angelegt.</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+<script>
+// =============================================
+// FIREBASE CONFIG (gleiches Projekt wie Dampflion Liga, eigener Datenpfad)
+// =============================================
+const firebaseConfig = {
+  apiKey: "AIzaSyDejm2KDiaaUs5apoaQcyxzQrB5Bfp84VY",
+  authDomain: "dampflion-liga.firebaseapp.com",
+  databaseURL: "https://dampflion-liga-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "dampflion-liga",
+  storageBucket: "dampflion-liga.firebasestorage.app",
+  messagingSenderId: "1037877331558",
+  appId: "1:1037877331558:web:299669c3d9dcfc65944fa7"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const ROOT = 'bedarfsabfrage'; // eigener, getrennter Datenpfad
+
+// =============================================
+// CONSTANTS - Poweradmin Passwort hier anpassen
+// =============================================
+const POWERADMIN_PW = 'bedarfdampflion2026';
+
+// =============================================
+// STATE
+// =============================================
+let state = { products: {}, accounts: {}, needs: {} };
+let currentAccountId = null; // eingeloggter Partner
+let isAdmin = false;
+let dataLoaded = false;
+
+// =============================================
+// FIREBASE LISTENER
+// =============================================
+function initFirebase(){
+  setSyncStatus('loading');
+  db.ref('/' + ROOT).on('value', snapshot => {
+    const data = snapshot.val() || {};
+    state.products = data.products || {};
+    state.accounts = data.accounts || {};
+    state.needs = data.needs || {};
+    dataLoaded = true;
+    setSyncStatus('online');
+    fillLoginSelect();
+    if (isAdmin) renderAdminAll();
+    if (currentAccountId) renderPartnerProducts();
+  }, err => {
+    setSyncStatus('offline');
+    showToast('Verbindung zu Firebase fehlgeschlagen!', true);
+  });
+}
+
+function setSyncStatus(status){
+  const dot = document.getElementById('sync-dot');
+  const label = document.getElementById('sync-label');
+  dot.className = 'sync-dot ' + status;
+  label.textContent = status === 'online' ? 'Live verbunden' : (status === 'loading' ? 'Verbinde...' : 'Offline');
+}
+
+// =============================================
+// HELPERS
+// =============================================
+function showToast(msg, isError){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isError ? ' error' : '');
+  setTimeout(() => { t.className = 'toast'; }, 2500);
+}
+
+function keyify(str){
+  return 'k_' + str.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now().toString(36).slice(-4);
+}
+
+function sortedProducts(){
+  return Object.entries(state.products)
+    .sort((a,b) => (a[1].order||0) - (b[1].order||0));
+}
+
+function sortedAccounts(){
+  return Object.entries(state.accounts)
+    .sort((a,b) => (a[1].nickname||'').localeCompare(b[1].nickname||''));
+}
+
+// =============================================
+// LOGIN SCREEN
+// =============================================
+function fillLoginSelect(){
+  const sel = document.getElementById('login-select');
+  const current = sel.value;
+  sel.innerHTML = '<option value="">Bitte wählen...</option>';
+  sortedAccounts().forEach(([id, acc]) => {
+    const opt = document.createElement('option');
+    opt.value = id;
+    opt.textContent = acc.nickname;
+    sel.appendChild(opt);
+  });
+  if (current) sel.value = current;
+}
+
+function doLogin(){
+  const id = document.getElementById('login-select').value;
+  const pw = document.getElementById('login-pw').value;
+  if (!id){ showToast('Bitte Nickname auswählen', true); return; }
+  const acc = state.accounts[id];
+  if (!acc || acc.password !== pw){
+    showToast('Falsches Passwort', true);
+    return;
+  }
+  currentAccountId = id;
+  localStorage.setItem('bedarf_account_id', id);
+  document.getElementById('login-pw').value = '';
+  showPartnerView();
+}
+
+function openAdminLogin(){
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('admin-login-screen').classList.remove('hidden');
+}
+
+function backToLogin(){
+  document.getElementById('admin-login-screen').classList.add('hidden');
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('admin-pw').value = '';
+}
+
+function doAdminLogin(){
+  const pw = document.getElementById('admin-pw').value;
+  if (pw !== POWERADMIN_PW){
+    showToast('Falsches Poweradmin-Passwort', true);
+    return;
+  }
+  isAdmin = true;
+  localStorage.setItem('bedarf_is_admin', '1');
+  document.getElementById('admin-pw').value = '';
+  showAdminView();
+}
+
+function logout(){
+  currentAccountId = null;
+  isAdmin = false;
+  localStorage.removeItem('bedarf_account_id');
+  localStorage.removeItem('bedarf_is_admin');
+  document.getElementById('partner-view').classList.add('hidden');
+  document.getElementById('admin-view').classList.add('hidden');
+  document.getElementById('admin-login-screen').classList.add('hidden');
+  document.getElementById('login-screen').classList.remove('hidden');
+}
+
+// =============================================
+// PARTNER VIEW
+// =============================================
+function showPartnerView(){
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('admin-login-screen').classList.add('hidden');
+  document.getElementById('partner-view').classList.remove('hidden');
+  const acc = state.accounts[currentAccountId];
+  document.getElementById('partner-name').textContent = acc ? acc.nickname : '';
+  renderPartnerProducts();
+}
+
+function renderPartnerProducts(){
+  const wrap = document.getElementById('partner-products');
+  const products = sortedProducts();
+  if (products.length === 0){
+    wrap.innerHTML = '<div class="empty">Es sind noch keine Produkte hinterlegt.</div>';
+    return;
+  }
+  const myNeeds = (state.needs[currentAccountId]) || {};
+  wrap.innerHTML = '';
+  products.forEach(([pid, p]) => {
+    const row = document.createElement('div');
+    row.className = 'product-row';
+    const qty = myNeeds[pid] != null ? myNeeds[pid] : '';
+    row.innerHTML = `
+      <div class="pname">${escapeHtml(p.name)}</div>
+      <input type="number" min="0" step="1" id="need-${pid}" value="${qty}" placeholder="0">
+    `;
+    wrap.appendChild(row);
+  });
+}
+
+function savePartnerNeeds(){
+  if (!currentAccountId) return;
+  const products = sortedProducts();
+  const updates = {};
+  products.forEach(([pid]) => {
+    const input = document.getElementById('need-' + pid);
+    const val = input.value.trim();
+    updates[pid] = val === '' ? 0 : Math.max(0, parseInt(val) || 0);
+  });
+  db.ref('/' + ROOT + '/needs/' + currentAccountId).set(updates).then(() => {
+    showToast('Bedarf gespeichert ✓');
+    document.getElementById('partner-last-saved').textContent =
+      'Zuletzt gespeichert: ' + new Date().toLocaleString('de-DE');
+  }).catch(() => showToast('Fehler beim Speichern', true));
+}
+
+function escapeHtml(s){
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+// =============================================
+// ADMIN VIEW
+// =============================================
+function showAdminView(){
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('admin-login-screen').classList.add('hidden');
+  document.getElementById('admin-view').classList.remove('hidden');
+  switchAdminTab('overview');
+  renderAdminAll();
+}
+
+function switchAdminTab(tab){
+  document.querySelectorAll('.admin-tab').forEach(el => {
+    el.classList.toggle('active', el.dataset.tab === tab);
+  });
+  document.getElementById('tab-overview').classList.toggle('hidden', tab !== 'overview');
+  document.getElementById('tab-products').classList.toggle('hidden', tab !== 'products');
+  document.getElementById('tab-products-list').classList.toggle('hidden', tab !== 'products');
+  document.getElementById('tab-accounts').classList.toggle('hidden', tab !== 'accounts');
+  document.getElementById('tab-accounts-list').classList.toggle('hidden', tab !== 'accounts');
+}
+
+function renderAdminAll(){
+  renderOverview();
+  renderProductsList();
+  renderAccountsList();
+}
+
+// --- Overview matrix ---
+function renderOverview(){
+  const products = sortedProducts();
+  const accounts = sortedAccounts();
+  const head = document.getElementById('overview-head');
+  const body = document.getElementById('overview-body');
+  const foot = document.getElementById('overview-foot');
+  const emptyMsg = document.getElementById('overview-empty');
+  const table = document.getElementById('overview-table');
+
+  if (products.length === 0 || accounts.length === 0){
+    table.classList.add('hidden');
+    emptyMsg.classList.remove('hidden');
+    return;
+  }
+  table.classList.remove('hidden');
+  emptyMsg.classList.add('hidden');
+
+  head.innerHTML = '<th>Partner</th>' + products.map(([pid,p]) => `<th>${escapeHtml(p.name)}</th>`).join('');
+
+  body.innerHTML = '';
+  const totals = {};
+  products.forEach(([pid]) => totals[pid] = 0);
+
+  accounts.forEach(([aid, acc]) => {
+    const tr = document.createElement('tr');
+    let rowHtml = `<td>${escapeHtml(acc.nickname)}</td>`;
+    products.forEach(([pid]) => {
+      const val = (state.needs[aid] && state.needs[aid][pid]) || 0;
+      totals[pid] += val;
+      rowHtml += `<td>${val || '–'}</td>`;
+    });
+    tr.innerHTML = rowHtml;
+    body.appendChild(tr);
+  });
+
+  foot.innerHTML = '<td>Gesamt</td>' + products.map(([pid]) => `<td>${totals[pid]}</td>`).join('');
+}
+
+// --- Products management ---
+function addProduct(){
+  const input = document.getElementById('new-product-name');
+  const name = input.value.trim();
+  if (!name){ showToast('Bitte Produktnamen eingeben', true); return; }
+  const id = keyify(name);
+  const order = sortedProducts().length;
+  db.ref('/' + ROOT + '/products/' + id).set({ name, order }).then(() => {
+    input.value = '';
+    showToast('Produkt angelegt ✓');
+  }).catch(() => showToast('Fehler beim Anlegen', true));
+}
+
+function deleteProduct(pid){
+  if (!confirm('Produkt wirklich löschen? Vorhandene Bedarfsmeldungen dazu bleiben in den Daten, werden aber nicht mehr angezeigt.')) return;
+  db.ref('/' + ROOT + '/products/' + pid).remove().then(() => showToast('Produkt gelöscht'));
+}
+
+function renderProductsList(){
+  const wrap = document.getElementById('products-list');
+  const emptyMsg = document.getElementById('products-empty');
+  const products = sortedProducts();
+  if (products.length === 0){
+    wrap.innerHTML = '';
+    emptyMsg.classList.remove('hidden');
+    return;
+  }
+  emptyMsg.classList.add('hidden');
+  wrap.innerHTML = '';
+  products.forEach(([pid, p]) => {
+    const row = document.createElement('div');
+    row.className = 'list-item';
+    row.innerHTML = `
+      <div class="meta">${escapeHtml(p.name)}</div>
+      <button class="btn-danger btn-small" onclick="deleteProduct('${pid}')">Löschen</button>
+    `;
+    wrap.appendChild(row);
+  });
+}
+
+// --- Accounts management ---
+function addAccount(){
+  const nickInput = document.getElementById('new-nickname');
+  const pwInput = document.getElementById('new-pw');
+  const nickname = nickInput.value.trim();
+  const password = pwInput.value.trim();
+  if (!nickname || !password){ showToast('Bitte Nickname und Passwort eingeben', true); return; }
+  const exists = sortedAccounts().some(([id, a]) => a.nickname.toLowerCase() === nickname.toLowerCase());
+  if (exists){ showToast('Dieser Nickname existiert bereits', true); return; }
+  const id = keyify(nickname);
+  db.ref('/' + ROOT + '/accounts/' + id).set({ nickname, password }).then(() => {
+    nickInput.value = '';
+    pwInput.value = '';
+    showToast('Partner angelegt ✓');
+  }).catch(() => showToast('Fehler beim Anlegen', true));
+}
+
+function deleteAccount(aid){
+  if (!confirm('Diesen Login-Partner wirklich löschen? Alle seine Bedarfsmeldungen werden ebenfalls entfernt.')) return;
+  db.ref('/' + ROOT + '/accounts/' + aid).remove();
+  db.ref('/' + ROOT + '/needs/' + aid).remove();
+  showToast('Partner gelöscht');
+}
+
+function renderAccountsList(){
+  const wrap = document.getElementById('accounts-list');
+  const emptyMsg = document.getElementById('accounts-empty');
+  const accounts = sortedAccounts();
+  if (accounts.length === 0){
+    wrap.innerHTML = '';
+    emptyMsg.classList.remove('hidden');
+    return;
+  }
+  emptyMsg.classList.add('hidden');
+  wrap.innerHTML = '';
+  accounts.forEach(([aid, acc]) => {
+    const row = document.createElement('div');
+    row.className = 'list-item';
+    row.innerHTML = `
+      <div class="meta">${escapeHtml(acc.nickname)}<span class="small">Passwort: ${escapeHtml(acc.password)}</span></div>
+      <button class="btn-danger btn-small" onclick="deleteAccount('${aid}')">Löschen</button>
+    `;
+    wrap.appendChild(row);
+  });
+}
+
+// =============================================
+// INIT / SESSION RESTORE
+// =============================================
+window.addEventListener('DOMContentLoaded', () => {
+  initFirebase();
+
+  const savedAdmin = localStorage.getItem('bedarf_is_admin');
+  const savedAccount = localStorage.getItem('bedarf_account_id');
+
+  if (savedAdmin === '1'){
+    isAdmin = true;
+    showAdminView();
+  } else if (savedAccount){
+    currentAccountId = savedAccount;
+    // Warten bis Daten geladen sind, dann prüfen ob Account noch existiert
+    const check = setInterval(() => {
+      if (dataLoaded){
+        clearInterval(check);
+        if (state.accounts[savedAccount]){
+          showPartnerView();
+        } else {
+          logout();
+        }
+      }
+    }, 150);
+  }
+});
+</script>
+</body>
+</html>
