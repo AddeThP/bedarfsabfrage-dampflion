@@ -17,6 +17,7 @@
     --text-dim:#9098a8;
     --green:#3fae5c;
     --danger:#d9534f;
+    --ice:#6ab7e8;
   }
   *{box-sizing:border-box;}
   body{
@@ -26,94 +27,52 @@
     color:var(--text);
     min-height:100vh;
   }
-  .wrap{max-width:640px;margin:0 auto;padding:20px 16px 60px;}
-  header{
-    text-align:center;
-    padding:18px 0 22px;
-  }
-  header h1{
-    margin:0;
-    font-size:22px;
-    letter-spacing:0.5px;
-    font-weight:700;
-  }
+  .wrap{max-width:720px;margin:0 auto;padding:20px 16px 60px;}
+  header{text-align:center;padding:18px 0 22px;}
+  header h1{margin:0;font-size:22px;letter-spacing:0.5px;font-weight:700;}
   header h1 span{color:var(--gold);}
   header .sub{color:var(--text-dim);font-size:13px;margin-top:4px;}
 
-  .sync-row{
-    display:flex;align-items:center;justify-content:center;gap:6px;
-    font-size:12px;color:var(--text-dim);margin-top:8px;
-  }
+  .sync-row{display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--text-dim);margin-top:8px;}
   .sync-dot{width:7px;height:7px;border-radius:50%;background:#555;}
   .sync-dot.online{background:var(--green);box-shadow:0 0 6px var(--green);}
   .sync-dot.loading{background:var(--gold);animation:pulse 1s infinite;}
   .sync-dot.offline{background:var(--danger);}
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
 
-  .card{
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:18px;
-    margin-bottom:16px;
-  }
-  .card h2{
-    font-size:14px;
-    text-transform:uppercase;
-    letter-spacing:0.8px;
-    color:var(--gold);
-    margin:0 0 14px;
-  }
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px;}
+  .card h2{font-size:14px;text-transform:uppercase;letter-spacing:0.8px;color:var(--gold);margin:0 0 14px;}
   label{display:block;font-size:13px;color:var(--text-dim);margin-bottom:6px;}
   select, input[type=text], input[type=password], input[type=number]{
-    width:100%;
-    background:var(--bg2);
-    border:1px solid var(--border);
-    color:var(--text);
-    padding:11px 12px;
-    border-radius:8px;
-    font-size:15px;
-    margin-bottom:14px;
+    width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);
+    padding:11px 12px;border-radius:8px;font-size:15px;margin-bottom:14px;
   }
   select:focus, input:focus{outline:none;border-color:var(--gold);}
+  input:disabled{opacity:0.55;cursor:not-allowed;}
 
-  button{
-    cursor:pointer;
-    border:none;
-    border-radius:8px;
-    padding:12px 16px;
-    font-size:14px;
-    font-weight:600;
-    transition:transform .05s ease;
-  }
+  button{cursor:pointer;border:none;border-radius:8px;padding:12px 16px;font-size:14px;font-weight:600;transition:transform .05s ease;}
   button:active{transform:scale(0.98);}
+  button:disabled{opacity:0.45;cursor:not-allowed;}
   .btn-primary{background:var(--gold);color:#1a1a1a;width:100%;}
-  .btn-primary:hover{background:var(--gold-soft);}
-  .btn-secondary{background:transparent;color:var(--text-dim);border:1px solid var(--border);width:100%;}
-  .btn-secondary:hover{color:var(--text);border-color:var(--text-dim);}
+  .btn-primary:hover:not(:disabled){background:var(--gold-soft);}
+  .btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--text-dim);}
+  .btn-ice{background:transparent;color:var(--ice);border:1px solid var(--ice);}
   .btn-danger{background:var(--danger);color:#fff;}
   .btn-small{padding:7px 10px;font-size:12px;width:auto;}
-  .btn-row{display:flex;gap:8px;}
-  .btn-row button{flex:1;}
 
   .hidden{display:none !important;}
 
-  .product-row{
-    display:flex;align-items:center;gap:12px;
-    padding:10px 0;border-bottom:1px solid var(--border);
-  }
+  .product-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
   .product-row:last-child{border-bottom:none;}
   .product-row .pname{flex:1;font-size:15px;}
-  .product-row input[type=number]{
-    width:80px;margin-bottom:0;text-align:center;
-  }
+  .product-row input[type=number]{width:80px;margin-bottom:0;text-align:center;}
 
   .toast{
     position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
     background:var(--card);border:1px solid var(--gold);color:var(--text);
     padding:10px 18px;border-radius:8px;font-size:14px;
-    opacity:0;pointer-events:none;transition:opacity .25s ease, bottom .25s ease;
-    z-index:999;
+    opacity:0;pointer-events:none;transition:opacity .25s ease, bottom .25s ease;z-index:999;
   }
   .toast.error{border-color:var(--danger);}
   .toast.show{opacity:1;bottom:30px;}
@@ -128,21 +87,38 @@
   th,td{padding:8px 6px;border-bottom:1px solid var(--border);text-align:center;}
   th{color:var(--gold);font-weight:600;font-size:12px;white-space:nowrap;}
   td:first-child, th:first-child{text-align:left;color:var(--text);}
-  tfoot td{color:var(--gold);font-weight:700;background:rgba(224,169,74,0.06);}
   .table-scroll{overflow-x:auto;}
+
+  /* Abfrage-Reiter */
+  .round-bar{display:flex;align-items:stretch;gap:8px;margin-bottom:14px;}
+  .round-tabs{flex:1;display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;}
+  .round-tab{
+    flex:0 0 auto;padding:9px 14px;border-radius:8px;background:var(--bg2);
+    border:1px solid var(--border);color:var(--text-dim);font-size:13px;font-weight:600;white-space:nowrap;
+  }
+  .round-tab.active{background:var(--card);color:var(--gold);border-color:var(--gold);}
+  .round-tab .lock{margin-left:5px;font-size:11px;}
+  .round-add{flex:0 0 auto;width:42px;padding:0;font-size:22px;line-height:1;background:var(--gold);color:#1a1a1a;}
+
+  .status-chip{display:inline-block;font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;margin-left:8px;vertical-align:middle;}
+  .status-chip.open{background:rgba(63,174,92,0.15);color:var(--green);}
+  .status-chip.frozen{background:rgba(106,183,232,0.15);color:var(--ice);}
+  .round-controls{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .round-controls .title{font-size:16px;font-weight:700;}
+  .round-controls .btns{display:flex;gap:6px;flex-wrap:wrap;}
+  .banner{
+    background:rgba(106,183,232,0.1);border:1px solid var(--ice);color:var(--ice);
+    border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:14px;
+  }
 
   .admin-tabs{display:flex;gap:6px;margin-bottom:16px;}
   .admin-tab{
-    flex:1;text-align:center;padding:9px 6px;border-radius:8px;
-    background:var(--bg2);border:1px solid var(--border);
-    color:var(--text-dim);font-size:12px;cursor:pointer;font-weight:600;
+    flex:1;text-align:center;padding:9px 6px;border-radius:8px;background:var(--bg2);
+    border:1px solid var(--border);color:var(--text-dim);font-size:12px;cursor:pointer;font-weight:600;
   }
   .admin-tab.active{background:var(--gold);color:#1a1a1a;border-color:var(--gold);}
 
-  .list-item{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:10px 0;border-bottom:1px solid var(--border);
-  }
+  .list-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);}
   .list-item:last-child{border-bottom:none;}
   .list-item .meta{font-size:13px;}
   .list-item .meta .small{display:block;color:var(--text-dim);font-size:11px;margin-top:2px;}
@@ -157,7 +133,7 @@
 
   <header>
     <h1>🔥 Bedarfsabfrage <span>Dampflion</span></h1>
-    <div class="sub">Meldet euren Produktbedarf direkt hier an</div>
+    <div class="sub">Meldet euren Produktbedarf direkt hier an <span style="opacity:.5">· v2</span></div>
     <div class="sync-row"><div class="sync-dot" id="sync-dot"></div><span id="sync-label">Verbinde...</span></div>
   </header>
 
@@ -191,10 +167,12 @@
       <div class="who">Angemeldet als <span id="partner-name"></span></div>
       <button class="link-btn" onclick="logout()">Abmelden</button>
     </div>
+    <div class="round-bar"><div class="round-tabs" id="partner-round-tabs"></div></div>
     <div class="card">
       <h2>Euer Bedarf</h2>
+      <div class="banner hidden" id="partner-frozen-banner">🔒 Diese Abfrage ist abgeschlossen. Der Bedarf kann nicht mehr geändert werden.</div>
       <div id="partner-products"></div>
-      <div class="savebar">
+      <div class="savebar" id="partner-savebar">
         <button class="btn-primary" onclick="savePartnerNeeds()">Bedarf speichern</button>
       </div>
       <div class="last-saved" id="partner-last-saved"></div>
@@ -206,6 +184,26 @@
     <div class="top-actions">
       <div class="who">Poweradmin</div>
       <button class="link-btn" onclick="logout()">Abmelden</button>
+    </div>
+
+    <div class="round-bar">
+      <div class="round-tabs" id="admin-round-tabs"></div>
+      <button class="round-add" title="Neue Abfrage anlegen" onclick="addRound()">+</button>
+    </div>
+
+    <div class="card hidden" id="round-controls-card">
+      <div class="round-controls">
+        <div class="title"><span id="round-title"></span><span class="status-chip" id="round-status"></span></div>
+        <div class="btns">
+          <button class="btn-ice btn-small" id="freeze-btn" onclick="toggleFreeze()">Einfrieren</button>
+          <button class="btn-ghost btn-small" onclick="renameRound()">Umbenennen</button>
+          <button class="btn-danger btn-small" onclick="deleteRound()">Löschen</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card hidden" id="no-round-card">
+      <div class="empty">Noch keine Abfrage angelegt. Klick oben rechts auf <b>+</b>, um die erste Abfrage zu erstellen.</div>
     </div>
 
     <div class="admin-tabs">
@@ -221,7 +219,6 @@
         <table id="overview-table">
           <thead><tr id="overview-head"></tr></thead>
           <tbody id="overview-body"></tbody>
-          <tfoot><tr id="overview-foot"></tr></tfoot>
         </table>
       </div>
       <div class="empty hidden" id="overview-empty">Noch keine Produkte oder Partner angelegt.</div>
@@ -230,12 +227,13 @@
     <!-- PRODUCTS TAB -->
     <div class="card admin-panel hidden" id="tab-products">
       <h2>Produkt hinzufügen</h2>
+      <div class="banner hidden" id="products-frozen-banner">🔒 Abfrage ist eingefroren. Zum Bearbeiten der Produkte erst auftauen.</div>
       <label for="new-product-name">Produktname</label>
       <input type="text" id="new-product-name" placeholder="z.B. Produkt 1">
-      <button class="btn-primary" onclick="addProduct()">Produkt anlegen</button>
+      <button class="btn-primary" id="add-product-btn" onclick="addProduct()">Produkt anlegen</button>
     </div>
     <div class="card admin-panel hidden" id="tab-products-list">
-      <h2>Produkte</h2>
+      <h2>Produkte dieser Abfrage</h2>
       <div id="products-list"></div>
       <div class="empty hidden" id="products-empty">Noch keine Produkte angelegt.</div>
     </div>
@@ -250,7 +248,7 @@
       <button class="btn-primary" onclick="addAccount()">Partner anlegen</button>
     </div>
     <div class="card admin-panel hidden" id="tab-accounts-list">
-      <h2>Login-Partner</h2>
+      <h2>Login-Partner (gelten für alle Abfragen)</h2>
       <div id="accounts-list"></div>
       <div class="empty hidden" id="accounts-empty">Noch keine Partner angelegt.</div>
     </div>
@@ -260,7 +258,6 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
@@ -280,36 +277,58 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-const ROOT = 'bedarfsabfrage'; // eigener, getrennter Datenpfad
+const ROOT = 'bedarfsabfrage';
 
 // =============================================
-// CONSTANTS - Poweradmin Passwort hier anpassen
+// Poweradmin Passwort
 // =============================================
 const POWERADMIN_PW = 'DampfLion1991!?';
 
 // =============================================
 // STATE
+// Datenmodell:
+//  /bedarfsabfrage/accounts/{aid} = {nickname, password}
+//  /bedarfsabfrage/rounds/{rid}   = {name, order, frozen, products:{pid:{name,order}}, needs:{aid:{pid:menge}}}
 // =============================================
-let state = { products: {}, accounts: {}, needs: {} };
-let currentAccountId = null; // eingeloggter Partner
+let state = { rounds: {}, accounts: {} };
+let currentAccountId = null;
+let currentRoundId = null;
 let isAdmin = false;
 let dataLoaded = false;
+let partnerDirty = false;
 
 // =============================================
-// FIREBASE LISTENER
+// FIREBASE LISTENER + MIGRATION
 // =============================================
 function initFirebase(){
   setSyncStatus('loading');
   db.ref('/' + ROOT).on('value', snapshot => {
     const data = snapshot.val() || {};
-    state.products = data.products || {};
+
+    // Migration: alte Struktur (products/needs direkt unter Root) -> "Abfrage 1"
+    if ((data.products || data.needs) && !(data.rounds && data.rounds.r_1)){
+      const updates = {};
+      updates['rounds/r_1'] = {
+        name: 'Abfrage 1',
+        order: 0,
+        frozen: false,
+        products: data.products || {},
+        needs: data.needs || {}
+      };
+      updates['products'] = null;
+      updates['needs'] = null;
+      db.ref('/' + ROOT).update(updates).catch(e => { setSyncStatus('offline'); showToast('Migration fehlgeschlagen: ' + errMsg(e), true); });
+      return; // der Listener feuert nach dem Update erneut
+    }
+
+    state.rounds = data.rounds || {};
     state.accounts = data.accounts || {};
-    state.needs = data.needs || {};
     dataLoaded = true;
     setSyncStatus('online');
+    ensureCurrentRound();
     fillLoginSelect();
     if (isAdmin) renderAdminAll();
-    if (currentAccountId) renderPartnerProducts();
+    if (currentAccountId) renderPartnerAll(false);
   }, err => {
     setSyncStatus('offline');
     showToast('Verbindung zu Firebase fehlgeschlagen!', true);
@@ -333,13 +352,22 @@ function showToast(msg, isError){
   setTimeout(() => { t.className = 'toast'; }, 2500);
 }
 
+function errMsg(e){
+  return (e && (e.code || e.message)) ? (e.code || '') + ' ' + (e.message || '') : String(e);
+}
+
 function keyify(str){
   return 'k_' + str.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now().toString(36).slice(-4);
 }
 
-function sortedProducts(){
-  return Object.entries(state.products)
-    .sort((a,b) => (a[1].order||0) - (b[1].order||0));
+function escapeHtml(s){
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function sortedRounds(){
+  return Object.entries(state.rounds).sort((a,b) => (a[1].order||0) - (b[1].order||0));
 }
 
 function sortedAccounts(){
@@ -347,8 +375,51 @@ function sortedAccounts(){
     .sort((a,b) => (a[1].nickname||'').localeCompare(b[1].nickname||''));
 }
 
+function currentRound(){
+  return currentRoundId ? state.rounds[currentRoundId] : null;
+}
+
+function isRoundFrozen(){
+  const r = currentRound();
+  return !!(r && r.frozen);
+}
+
+function sortedProducts(){
+  const r = currentRound();
+  if (!r || !r.products) return [];
+  return Object.entries(r.products).sort((a,b) => (a[1].order||0) - (b[1].order||0));
+}
+
+function ensureCurrentRound(){
+  if (currentRoundId && state.rounds[currentRoundId]) return;
+  const saved = localStorage.getItem('bedarf_round_id');
+  if (saved && state.rounds[saved]){ currentRoundId = saved; return; }
+  const list = sortedRounds();
+  currentRoundId = list.length ? list[list.length - 1][0] : null; // neueste Abfrage
+}
+
+function setRound(rid){
+  currentRoundId = rid;
+  partnerDirty = false;
+  localStorage.setItem('bedarf_round_id', rid);
+  if (isAdmin) renderAdminAll();
+  if (currentAccountId) renderPartnerAll(true);
+}
+
+function renderRoundTabs(containerId){
+  const wrap = document.getElementById(containerId);
+  wrap.innerHTML = '';
+  sortedRounds().forEach(([rid, r]) => {
+    const b = document.createElement('button');
+    b.className = 'round-tab' + (rid === currentRoundId ? ' active' : '');
+    b.innerHTML = escapeHtml(r.name) + (r.frozen ? '<span class="lock">🔒</span>' : '');
+    b.onclick = () => setRound(rid);
+    wrap.appendChild(b);
+  });
+}
+
 // =============================================
-// LOGIN SCREEN
+// LOGIN
 // =============================================
 function fillLoginSelect(){
   const sel = document.getElementById('login-select');
@@ -404,6 +475,7 @@ function doAdminLogin(){
 function logout(){
   currentAccountId = null;
   isAdmin = false;
+  partnerDirty = false;
   localStorage.removeItem('bedarf_account_id');
   localStorage.removeItem('bedarf_is_admin');
   document.getElementById('partner-view').classList.add('hidden');
@@ -421,17 +493,34 @@ function showPartnerView(){
   document.getElementById('partner-view').classList.remove('hidden');
   const acc = state.accounts[currentAccountId];
   document.getElementById('partner-name').textContent = acc ? acc.nickname : '';
-  renderPartnerProducts();
+  renderPartnerAll(true);
+}
+
+// force=false: Eingaben des Partners nicht überschreiben, solange er tippt
+function renderPartnerAll(force){
+  renderRoundTabs('partner-round-tabs');
+  const frozen = isRoundFrozen();
+  document.getElementById('partner-frozen-banner').classList.toggle('hidden', !frozen);
+  document.getElementById('partner-savebar').classList.toggle('hidden', frozen);
+  if (force || !partnerDirty || frozen) renderPartnerProducts();
 }
 
 function renderPartnerProducts(){
   const wrap = document.getElementById('partner-products');
-  const products = sortedProducts();
-  if (products.length === 0){
-    wrap.innerHTML = '<div class="empty">Es sind noch keine Produkte hinterlegt.</div>';
+  const r = currentRound();
+  if (!r){
+    wrap.innerHTML = '<div class="empty">Es gibt noch keine Abfrage.</div>';
+    document.getElementById('partner-savebar').classList.add('hidden');
     return;
   }
-  const myNeeds = (state.needs[currentAccountId]) || {};
+  const products = sortedProducts();
+  if (products.length === 0){
+    wrap.innerHTML = '<div class="empty">In dieser Abfrage sind noch keine Produkte hinterlegt.</div>';
+    document.getElementById('partner-savebar').classList.add('hidden');
+    return;
+  }
+  const frozen = !!r.frozen;
+  const myNeeds = (r.needs && r.needs[currentAccountId]) || {};
   wrap.innerHTML = '';
   products.forEach(([pid, p]) => {
     const row = document.createElement('div');
@@ -439,32 +528,30 @@ function renderPartnerProducts(){
     const qty = myNeeds[pid] != null ? myNeeds[pid] : '';
     row.innerHTML = `
       <div class="pname">${escapeHtml(p.name)}</div>
-      <input type="number" min="0" step="1" id="need-${pid}" value="${qty}" placeholder="0">
+      <input type="number" min="0" step="1" id="need-${pid}" value="${qty}" placeholder="0" ${frozen ? 'disabled' : ''}>
     `;
     wrap.appendChild(row);
   });
+  wrap.querySelectorAll('input').forEach(inp => inp.addEventListener('input', () => { partnerDirty = true; }));
+  document.getElementById('partner-savebar').classList.toggle('hidden', frozen);
 }
 
 function savePartnerNeeds(){
-  if (!currentAccountId) return;
-  const products = sortedProducts();
+  if (!currentAccountId || !currentRoundId) return;
+  if (isRoundFrozen()){ showToast('Diese Abfrage ist eingefroren', true); return; }
   const updates = {};
-  products.forEach(([pid]) => {
+  sortedProducts().forEach(([pid]) => {
     const input = document.getElementById('need-' + pid);
+    if (!input) return;
     const val = input.value.trim();
     updates[pid] = val === '' ? 0 : Math.max(0, parseInt(val) || 0);
   });
-  db.ref('/' + ROOT + '/needs/' + currentAccountId).set(updates).then(() => {
+  db.ref('/' + ROOT + '/rounds/' + currentRoundId + '/needs/' + currentAccountId).set(updates).then(() => {
+    partnerDirty = false;
     showToast('Bedarf gespeichert ✓');
     document.getElementById('partner-last-saved').textContent =
       'Zuletzt gespeichert: ' + new Date().toLocaleString('de-DE');
-  }).catch(() => showToast('Fehler beim Speichern', true));
-}
-
-function escapeHtml(s){
-  const d = document.createElement('div');
-  d.textContent = s;
-  return d.innerHTML;
+  }).catch(e => showToast('Fehler beim Speichern: ' + errMsg(e), true));
 }
 
 // =============================================
@@ -490,22 +577,92 @@ function switchAdminTab(tab){
 }
 
 function renderAdminAll(){
+  renderRoundTabs('admin-round-tabs');
+  renderRoundControls();
   renderOverview();
   renderProductsList();
   renderAccountsList();
 }
 
-// --- Overview matrix ---
+// --- Abfragen (Reiter) ---
+function addRound(){
+  const name = prompt('Name der neuen Abfrage:', 'Abfrage ' + (sortedRounds().length + 1));
+  if (name === null) return;
+  const clean = name.trim();
+  if (!clean){ showToast('Bitte einen Namen eingeben', true); return; }
+  const id = keyify(clean);
+  const order = sortedRounds().length;
+  db.ref('/' + ROOT + '/rounds/' + id).set({ name: clean, order, frozen: false }).then(() => {
+    currentRoundId = id;
+    localStorage.setItem('bedarf_round_id', id);
+    showToast('Abfrage angelegt ✓');
+  }).catch(e => showToast('Fehler beim Anlegen: ' + errMsg(e), true));
+}
+
+function renameRound(){
+  const r = currentRound();
+  if (!r) return;
+  const name = prompt('Neuer Name:', r.name);
+  if (name === null) return;
+  const clean = name.trim();
+  if (!clean) return;
+  db.ref('/' + ROOT + '/rounds/' + currentRoundId + '/name').set(clean).catch(e => showToast('Fehler: ' + errMsg(e), true));
+}
+
+function deleteRound(){
+  const r = currentRound();
+  if (!r) return;
+  if (!confirm('Abfrage "' + r.name + '" mit allen Produkten und allen gemeldeten Bedarfen unwiderruflich löschen?')) return;
+  const rid = currentRoundId;
+  currentRoundId = null;
+  db.ref('/' + ROOT + '/rounds/' + rid).remove().then(() => showToast('Abfrage gelöscht')).catch(e => showToast('Fehler: ' + errMsg(e), true));
+}
+
+function toggleFreeze(){
+  const r = currentRound();
+  if (!r) return;
+  const willFreeze = !r.frozen;
+  const msg = willFreeze
+    ? 'Abfrage "' + r.name + '" jetzt einfrieren? Danach kann niemand mehr Bedarfe ändern.'
+    : 'Abfrage "' + r.name + '" wieder auftauen? Partner können dann wieder Änderungen machen.';
+  if (!confirm(msg)) return;
+  db.ref('/' + ROOT + '/rounds/' + currentRoundId + '/frozen').set(willFreeze).then(() => {
+    showToast(willFreeze ? 'Abfrage eingefroren 🔒' : 'Abfrage aufgetaut');
+  }).catch(e => showToast('Fehler beim Einfrieren: ' + errMsg(e), true));
+}
+
+function renderRoundControls(){
+  const r = currentRound();
+  const card = document.getElementById('round-controls-card');
+  const noRound = document.getElementById('no-round-card');
+  if (!r){
+    card.classList.add('hidden');
+    noRound.classList.remove('hidden');
+  } else {
+    card.classList.remove('hidden');
+    noRound.classList.add('hidden');
+    document.getElementById('round-title').textContent = r.name;
+    const chip = document.getElementById('round-status');
+    chip.textContent = r.frozen ? '🔒 Eingefroren' : 'Offen';
+    chip.className = 'status-chip ' + (r.frozen ? 'frozen' : 'open');
+    document.getElementById('freeze-btn').textContent = r.frozen ? 'Auftauen' : 'Einfrieren';
+  }
+  // aktiven Reiter (Übersicht/Produkte/Partner) beibehalten
+  const active = document.querySelector('.admin-tab.active');
+  switchAdminTab(active ? active.dataset.tab : 'overview');
+}
+
+// --- Übersicht ---
 function renderOverview(){
   const products = sortedProducts();
   const accounts = sortedAccounts();
   const head = document.getElementById('overview-head');
   const body = document.getElementById('overview-body');
-  const foot = document.getElementById('overview-foot');
   const emptyMsg = document.getElementById('overview-empty');
   const table = document.getElementById('overview-table');
+  const r = currentRound();
 
-  if (products.length === 0 || accounts.length === 0){
+  if (!r || products.length === 0 || accounts.length === 0){
     table.classList.add('hidden');
     emptyMsg.classList.remove('hidden');
     return;
@@ -513,16 +670,18 @@ function renderOverview(){
   table.classList.remove('hidden');
   emptyMsg.classList.add('hidden');
 
-  head.innerHTML = '<th>Produkt</th>' + accounts.map(([aid,acc]) => `<th>${escapeHtml(acc.nickname)}</th>`).join('') + '<th>Gesamt</th>';
+  head.innerHTML = '<th>Produkt</th>' +
+    accounts.map(([aid,acc]) => `<th>${escapeHtml(acc.nickname)}</th>`).join('') +
+    '<th>Gesamt</th>';
 
   body.innerHTML = '';
-
+  const needs = r.needs || {};
   products.forEach(([pid, p]) => {
     const tr = document.createElement('tr');
     let rowHtml = `<td>${escapeHtml(p.name)}</td>`;
     let rowTotal = 0;
     accounts.forEach(([aid]) => {
-      const val = (state.needs[aid] && state.needs[aid][pid]) || 0;
+      const val = (needs[aid] && needs[aid][pid]) || 0;
       rowTotal += val;
       rowHtml += `<td>${val || '–'}</td>`;
     });
@@ -530,31 +689,35 @@ function renderOverview(){
     tr.innerHTML = rowHtml;
     body.appendChild(tr);
   });
-
-  foot.innerHTML = '';
 }
 
-// --- Products management ---
+// --- Produkte (pro Abfrage) ---
 function addProduct(){
+  if (!currentRoundId){ showToast('Erst eine Abfrage anlegen (+)', true); return; }
+  if (isRoundFrozen()){ showToast('Abfrage ist eingefroren', true); return; }
   const input = document.getElementById('new-product-name');
   const name = input.value.trim();
   if (!name){ showToast('Bitte Produktnamen eingeben', true); return; }
   const id = keyify(name);
   const order = sortedProducts().length;
-  db.ref('/' + ROOT + '/products/' + id).set({ name, order }).then(() => {
+  db.ref('/' + ROOT + '/rounds/' + currentRoundId + '/products/' + id).set({ name, order }).then(() => {
     input.value = '';
     showToast('Produkt angelegt ✓');
-  }).catch(() => showToast('Fehler beim Anlegen', true));
+  }).catch(e => showToast('Fehler beim Anlegen: ' + errMsg(e), true));
 }
 
 function deleteProduct(pid){
-  if (!confirm('Produkt wirklich löschen? Vorhandene Bedarfsmeldungen dazu bleiben in den Daten, werden aber nicht mehr angezeigt.')) return;
-  db.ref('/' + ROOT + '/products/' + pid).remove().then(() => showToast('Produkt gelöscht'));
+  if (isRoundFrozen()){ showToast('Abfrage ist eingefroren', true); return; }
+  if (!confirm('Produkt wirklich löschen? Die dazu gemeldeten Bedarfe werden nicht mehr angezeigt.')) return;
+  db.ref('/' + ROOT + '/rounds/' + currentRoundId + '/products/' + pid).remove().then(() => showToast('Produkt gelöscht'));
 }
 
 function renderProductsList(){
   const wrap = document.getElementById('products-list');
   const emptyMsg = document.getElementById('products-empty');
+  const frozen = isRoundFrozen();
+  document.getElementById('products-frozen-banner').classList.toggle('hidden', !frozen);
+  document.getElementById('add-product-btn').disabled = frozen || !currentRoundId;
   const products = sortedProducts();
   if (products.length === 0){
     wrap.innerHTML = '';
@@ -568,13 +731,13 @@ function renderProductsList(){
     row.className = 'list-item';
     row.innerHTML = `
       <div class="meta">${escapeHtml(p.name)}</div>
-      <button class="btn-danger btn-small" onclick="deleteProduct('${pid}')">Löschen</button>
+      <button class="btn-danger btn-small" ${frozen ? 'disabled' : ''} onclick="deleteProduct('${pid}')">Löschen</button>
     `;
     wrap.appendChild(row);
   });
 }
 
-// --- Accounts management ---
+// --- Partner (global) ---
 function addAccount(){
   const nickInput = document.getElementById('new-nickname');
   const pwInput = document.getElementById('new-pw');
@@ -588,14 +751,15 @@ function addAccount(){
     nickInput.value = '';
     pwInput.value = '';
     showToast('Partner angelegt ✓');
-  }).catch(() => showToast('Fehler beim Anlegen', true));
+  }).catch(e => showToast('Fehler beim Anlegen: ' + errMsg(e), true));
 }
 
 function deleteAccount(aid){
-  if (!confirm('Diesen Login-Partner wirklich löschen? Alle seine Bedarfsmeldungen werden ebenfalls entfernt.')) return;
-  db.ref('/' + ROOT + '/accounts/' + aid).remove();
-  db.ref('/' + ROOT + '/needs/' + aid).remove();
-  showToast('Partner gelöscht');
+  if (!confirm('Diesen Login-Partner wirklich löschen? Seine Bedarfsmeldungen in ALLEN Abfragen werden ebenfalls entfernt.')) return;
+  const updates = {};
+  updates['accounts/' + aid] = null;
+  Object.keys(state.rounds).forEach(rid => { updates['rounds/' + rid + '/needs/' + aid] = null; });
+  db.ref('/' + ROOT).update(updates).then(() => showToast('Partner gelöscht'));
 }
 
 function renderAccountsList(){
@@ -634,7 +798,6 @@ window.addEventListener('DOMContentLoaded', () => {
     showAdminView();
   } else if (savedAccount){
     currentAccountId = savedAccount;
-    // Warten bis Daten geladen sind, dann prüfen ob Account noch existiert
     const check = setInterval(() => {
       if (dataLoaded){
         clearInterval(check);
