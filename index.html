@@ -106,6 +106,15 @@
   .round-controls{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
   .round-controls .title{font-size:16px;font-weight:700;}
   .round-controls .btns{display:flex;gap:6px;flex-wrap:wrap;}
+  .deadline-bar{
+    display:flex;align-items:center;gap:10px;
+    background:rgba(224,169,74,0.1);border:1px solid var(--gold);color:var(--gold);
+    border-radius:10px;padding:11px 14px;font-size:14px;font-weight:600;margin-bottom:14px;
+  }
+  .deadline-bar .lbl{font-size:11px;text-transform:uppercase;letter-spacing:0.8px;opacity:0.8;}
+  .deadline-edit{display:flex;gap:8px;align-items:flex-end;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+  .deadline-edit .field{flex:1;}
+  .deadline-edit input{margin-bottom:0;}
   .banner{
     background:rgba(106,183,232,0.1);border:1px solid var(--ice);color:var(--ice);
     border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:14px;
@@ -168,6 +177,7 @@
       <button class="link-btn" onclick="logout()">Abmelden</button>
     </div>
     <div class="round-bar"><div class="round-tabs" id="partner-round-tabs"></div></div>
+    <div class="deadline-bar hidden" id="partner-deadline"></div>
     <div class="card">
       <h2>Euer Bedarf</h2>
       <div class="banner hidden" id="partner-frozen-banner">🔒 Diese Abfrage ist abgeschlossen. Der Bedarf kann nicht mehr geändert werden.</div>
@@ -199,6 +209,13 @@
           <button class="btn-ghost btn-small" onclick="renameRound()">Umbenennen</button>
           <button class="btn-danger btn-small" onclick="deleteRound()">Löschen</button>
         </div>
+      </div>
+      <div class="deadline-edit">
+        <div class="field">
+          <label for="deadline-input">Deadline (sichtbar für alle Partner)</label>
+          <input type="text" id="deadline-input" placeholder="z.B. 2.12. – Bestellung für Nauktis">
+        </div>
+        <button class="btn-primary btn-small" style="width:auto;padding:11px 14px;" onclick="saveDeadline()">Speichern</button>
       </div>
     </div>
 
@@ -502,6 +519,14 @@ function renderPartnerAll(force){
   const frozen = isRoundFrozen();
   document.getElementById('partner-frozen-banner').classList.toggle('hidden', !frozen);
   document.getElementById('partner-savebar').classList.toggle('hidden', frozen);
+  const dl = document.getElementById('partner-deadline');
+  const r = currentRound();
+  if (r && r.deadline){
+    dl.innerHTML = '<span class="lbl">⏰ Deadline</span><span>' + escapeHtml(r.deadline) + '</span>';
+    dl.classList.remove('hidden');
+  } else {
+    dl.classList.add('hidden');
+  }
   if (force || !partnerDirty || frozen) renderPartnerProducts();
 }
 
@@ -599,6 +624,15 @@ function addRound(){
   }).catch(e => showToast('Fehler beim Anlegen: ' + errMsg(e), true));
 }
 
+function saveDeadline(){
+  if (!isAdmin || !currentRoundId) return;
+  const val = document.getElementById('deadline-input').value.trim();
+  const ref = db.ref('/' + ROOT + '/rounds/' + currentRoundId + '/deadline');
+  const p = val ? ref.set(val) : ref.remove();
+  p.then(() => showToast(val ? 'Deadline gespeichert ✓' : 'Deadline entfernt'))
+   .catch(e => showToast('Fehler: ' + errMsg(e), true));
+}
+
 function renameRound(){
   const r = currentRound();
   if (!r) return;
@@ -646,6 +680,8 @@ function renderRoundControls(){
     chip.textContent = r.frozen ? '🔒 Eingefroren' : 'Offen';
     chip.className = 'status-chip ' + (r.frozen ? 'frozen' : 'open');
     document.getElementById('freeze-btn').textContent = r.frozen ? 'Auftauen' : 'Einfrieren';
+    const di = document.getElementById('deadline-input');
+    if (document.activeElement !== di) di.value = r.deadline || '';
   }
   // aktiven Reiter (Übersicht/Produkte/Partner) beibehalten
   const active = document.querySelector('.admin-tab.active');
